@@ -1,0 +1,15 @@
+{
+  "name": "vsp-provider-clone",
+  "version": "0.0.1",
+  "description": "A VPS clone using lxd VM with P0 features that a typical VPS provider has.",
+  "license": "ISC",
+  "author": "Prateek Yadu",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "node --watch app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
