@@ -12,5 +12,5 @@ app.get("/", (req, res) => {
 app.use("/api/v1/vms", vmsRoutes);
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port} ${process.env.LXD_SERVER}`);
+  console.log(`Listening on port ${port}`);
 });

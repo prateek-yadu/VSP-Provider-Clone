@@ -1,12 +1,19 @@
 import { Router } from "express";
-import getVMs from "../../controller/vms.controller.js";
+import { allVMs, getVM, startVM, stoptVM } from "../../controller/vms.controller.js";
 
 const router = Router();
 
-// router.get("/", (req, res) => {
-//   res.send("List all vms");
-// });
+// list all VMs
+router.get("/", allVMs);
 
-router.get("/", getVMs);
+// get a indivisual VM
+router.get("/:vmId", getVM)
+
+// starts VM
+router.get("/:vmId/start", startVM)
+
+// stops VM
+router.get("/:vmId/stop", stoptVM)
+
 
 export default router;
