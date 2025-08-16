@@ -14,17 +14,25 @@ export const getVM = async (req: Request, res: Response) => {
 }
 
 export const startVM = async (req: Request, res: Response) => {
-  const start = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}/state`, {
+  const startReq = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}/state`, {
     method: "PUT",
     body: JSON.stringify({ "action": "start" })
   })).json()
-  res.send(start)
+  res.send(startReq)
 }
 
 export const stoptVM = async (req: Request, res: Response) => {
-  const stop = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}/state`, {
+  const stopReq = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}/state`, {
     method: "PUT",
     body: JSON.stringify({ "action": "stop", "force": true })
   })).json()
-  res.send(stop)
+  res.send(stopReq)
+}
+
+export const restartVM = async (req: Request, res: Response) => {
+  const restartReq = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}/state`, {
+    method: "PUT",
+    body: JSON.stringify({ "action": "restart", "force": true })
+  })).json()
+  res.send(restartReq)
 }
