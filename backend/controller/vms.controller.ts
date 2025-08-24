@@ -70,3 +70,10 @@ export const restartVM = async (req: Request, res: Response) => {
   })).json()
   res.send(restartReq)
 }
+
+export const destroyVM = async (req: Request, res: Response) => {
+  const destryReq = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}`, {
+    method: "DELETE"
+  })).json()
+  res.send(destryReq)
+}

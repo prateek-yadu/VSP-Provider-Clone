@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allVMs, createVM, getVM, restartVM, startVM, stoptVM } from "../../controller/vms.controller.js";
+import { allVMs, createVM, destroyVM, getVM, restartVM, startVM, stoptVM } from "../../controller/vms.controller.js";
 
 const router = Router();
 
@@ -11,6 +11,9 @@ router.post("/", createVM);
 
 // get a indivisual VM
 router.get("/:vmId", getVM)
+
+// destroys a VM
+router.delete("/:vmId", destroyVM)
 
 // starts VM
 router.get("/:vmId/start", startVM)
