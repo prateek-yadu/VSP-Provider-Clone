@@ -13,6 +13,40 @@ export const getVM = async (req: Request, res: Response) => {
   res.send(VMDetails)
 }
 
+export const createVM = async (req: Request, res: Response) => {
+  const payload = await req.body
+  const createReq = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances`, {
+    method: "POST",
+    body: JSON.stringify({
+      "name": `${payload.name}`,
+      "description": `${payload.description}`,
+      "config": {
+        "limits.cpu": "1",
+        "limits.memory": "4GiB"
+      },
+      "devices": {
+        "root": {
+          "path": "/",
+          "pool": "default",
+          "type": "disk",
+          "size": "15GiB"
+        }
+      },
+      "source": {
+        "alias": "24.04",
+        "protocol": "simplestreams",
+        "server": "https://cloud-images.ubuntu.com/releases/",
+        "type": "image"
+      },
+      "boot.autostart": false,
+      "start": true,
+      "type": "virtual-machine"
+    })
+  })).json()
+  
+  res.json(createReq)
+}
+
 export const startVM = async (req: Request, res: Response) => {
   const startReq = await (await fetch(`${process.env.LXD_SERVER}/1.0/instances/${req.params.vmId}/state`, {
     method: "PUT",
