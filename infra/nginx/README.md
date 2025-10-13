@@ -1,3 +1,5 @@
+LXD restricts us for using the API directly, to enable API call from backend we need to pass the certificate along with the api call for that, we need to create a certificate then convert it into pem file then optionally we can setup a nginx server to get rid of manually adding the pem file again and agin in API call. Below is the setup for it and to create the .pfx file go through the following link https://documentation.ubuntu.com/lxd/latest/howto/access_ui/
+
 
 # Setup Nginx
 
