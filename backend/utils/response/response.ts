@@ -1,7 +1,7 @@
 import { Response } from "express"
 const send = {
     /*
-        ##----SUCESS----##
+        ##----SUCCESS----##
     */
     ok(res: Response, message?: string, data?: any) {
         return res.status(200).json({
