@@ -45,7 +45,7 @@ const send = {
     },
 
     /*
-       ##----Server SIDE ERROR----##
+       ##----SERVER SIDE ERROR----##
    */
     internalError(res: Response, message?: string, data?: any) {
         return res.status(500).json({
