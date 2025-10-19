@@ -49,6 +49,13 @@ const send = {
             ...(data && { data })
         })
     },
+    conflict(res: Response, message?: string, data?: any) {
+        return res.status(409).json({
+            status: 409,
+            message: message ? message : "Conflict",
+            ...(data && { data })
+        })
+    },
 
     /*
        ##----SERVER SIDE ERROR----##
