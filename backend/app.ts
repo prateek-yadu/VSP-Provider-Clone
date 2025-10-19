@@ -1,5 +1,6 @@
 import express from "express";
 import vmsRoutes from "./routes/vms/vms.routes.js";
+import authRoutes from "./routes/auth/auth.routes.js";
 import 'dotenv/config'
 
 const app = express();
@@ -12,6 +13,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/vms", vmsRoutes);
+
+app.use("/api/v1/auth", authRoutes )
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
