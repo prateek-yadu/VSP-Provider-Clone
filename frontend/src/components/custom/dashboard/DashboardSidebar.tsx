@@ -83,10 +83,18 @@ export default function DashboardSidebar({ title, url }: { title: string, url: s
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <Link to={url}>
+                            {/* <Link to={url}>
                                 <GalleryVerticalEnd />
                                 <span className="text-base font-semibold">{title}</span>
-                            </Link>
+                            </Link> */}
+                            <div className="flex justify-center gap-2 md:justify-start">
+                                <Link to={url} className="flex items-center gap-2 font-medium">
+                                    <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+                                        <GalleryVerticalEnd className="size-4" />
+                                    </div>
+                                    {title}
+                                </Link>
+                            </div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
