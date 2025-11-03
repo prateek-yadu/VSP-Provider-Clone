@@ -42,12 +42,12 @@ export const Login = async (req: Request, res: Response) => {
 }
 
 export const Register = async (req: Request, res: Response) => {
-    const { name, email, phone, password } = req.body;
-    const saltRounds: number = typeof (process.env.SALTROUNDS) == "string" && parseInt(process.env.SALTROUNDS) || 10;// adds salt rounds
-
+    
     try {
+        const { name, email, password } = req.body;
+        const saltRounds: number = typeof (process.env.SALTROUNDS) == "string" && parseInt(process.env.SALTROUNDS) || 10;// adds salt rounds
         // checks if user exists 
-        const [exists, fields]: any = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [exists, fields]: any = await pool.query('SELECT email FROM users WHERE email = ?', [email]);
 
         if (exists.length != 0) {
             // return duplicate user error
@@ -57,8 +57,8 @@ export const Register = async (req: Request, res: Response) => {
             const hash = bcrypt.hashSync(password, saltRounds); // genrates hashed password
 
             // creates user
-            const sql = 'INSERT INTO users (id, name, email, phone, password, image_url) VALUES (?, ?, ?, ?, ?, ?)';
-            const values = [userId, name, email, phone, hash, 'none'];
+            const sql = 'INSERT INTO users (id, name, email, password, image_url) VALUES (?, ?, ?, ?, ?)';
+            const values = [userId, name, email, hash, 'none'];
             const [result, fields] = await pool.execute(sql, values);
 
             send.created(res, "User Created Successfuly");
