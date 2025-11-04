@@ -5,18 +5,35 @@ import send from "../utils/response/index.js";
 import { pool } from '../db/config.js';
 import jwt from 'jsonwebtoken'
 
+interface userData {
+    name: string;
+    email: string;
+    imageUrl: string;
+}
+
 export const Login = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+
     try {
+        const { email, password } = req.body;
+
         // checks if user exists
-        const [exists, fields]: any = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [exists, fields]: any = await pool.query('SELECT name, image_url, password FROM users WHERE email = ?', [email]);
+
         if (exists.length != 0) {
             // checks password is vailed or not
             const vailed = await bcrypt.compare(password, exists[0].password);
 
             // if password is vailed send genrate and send token else thow error
             if (vailed) {
-                // genrate token
+
+                // stores user data to send frontend
+                const userInfo: userData = {
+                    name: exists[0].name,
+                    email: email,
+                    imageUrl: exists[0].image_url
+                }
+
+                // genrates token
                 const token = jwt.sign({ id: exists[0].id, name: exists[0].name }, process.env.JWT_SECRET || "shhh...", {
                     expiresIn: '1d'
                 });
@@ -29,7 +46,7 @@ export const Login = async (req: Request, res: Response) => {
                 });
 
                 // sends response
-                send.ok(res, "User Authenticated Successfully");
+                send.ok(res, "User Authenticated Successfully", { ...userInfo });
             } else {
                 send.unauthorized(res, "Invailed Credentials");
             }
