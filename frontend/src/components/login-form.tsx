@@ -1,18 +1,19 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
-import { useState, type SetStateAction } from "react"
-import { toast } from "sonner"
-import { useDispatch } from "react-redux"
-import { updateAuthState } from "../app/features/auth/AuthHandler"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Link, Navigate } from "react-router";
+import { useState, type SetStateAction } from "react";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { updateAuthState } from "../app/features/auth/AuthHandler";
+import type { RootState } from "../app/store";
 
 
 export function LoginForm({
@@ -20,13 +21,16 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
 
-  const dispatch = useDispatch()
+  // gets AuthState
+  const authState = useSelector((state: RootState) => state.AuthState);
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const dispatch = useDispatch();
 
-  const handleLogin = async (event: { preventDefault: () => void }) => {
-    event?.preventDefault()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (event: { preventDefault: () => void; }) => {
+    event?.preventDefault();
 
     // sends data to backend 
     const response = await (await fetch("/api/v1/auth/login", {
@@ -35,11 +39,11 @@ export function LoginForm({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password })
-    })).json()
+    })).json();
 
     // clears input
-    setEmail("")
-    setPassword("")
+    setEmail("");
+    setPassword("");
 
     // shows toast
     if (response.status == 200) {
@@ -49,12 +53,16 @@ export function LoginForm({
         name: response.data.name,
         email: response.data.email,
         imageUrl: response.data.imageUrl
-      }))
+      }));
 
-      toast.success(response.message)
+      toast.success(response.message);
     } else {
-      toast.error(response.message)
+      toast.error(response.message);
     }
+  };
+
+  if (authState.isAuthenticated) {
+    return <Navigate to={"/"} replace={true} />;
   }
 
 
@@ -69,14 +77,14 @@ export function LoginForm({
         </div>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="me@example.com" value={email} onChange={(e: { target: { value: SetStateAction<string> } }) => {
-            setEmail(e.target.value)
+          <Input id="email" type="email" placeholder="me@example.com" value={email} onChange={(e: { target: { value: SetStateAction<string>; }; }) => {
+            setEmail(e.target.value);
           }} required />
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input id="password" type="password" placeholder="••••••••••••" value={password} onChange={(e: { target: { value: SetStateAction<string> } }) => {
-            setPassword(e.target.value)
+          <Input id="password" type="password" placeholder="••••••••••••" value={password} onChange={(e: { target: { value: SetStateAction<string>; }; }) => {
+            setPassword(e.target.value);
           }} required />
           <div className="w-fit flex items-center justify-end">
             <Link
@@ -110,5 +118,5 @@ export function LoginForm({
         </Field>
       </FieldGroup>
     </form>
-  )
+  );
 }

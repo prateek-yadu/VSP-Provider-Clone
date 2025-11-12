@@ -1,31 +1,35 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
-import { useState, type SetStateAction } from "react"
-import { toast } from "sonner"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Link, Navigate } from "react-router";
+import { useState, type SetStateAction } from "react";
+import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import type { RootState } from "../app/store";
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
 
+  // gets AuthState
+  const authState = useSelector((state: RootState) => state.AuthState);
 
   // user input
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // register handling logic
-  const handleRegister = async (event: { preventDefault: () => void }) => {
-    event?.preventDefault()
+  const handleRegister = async (event: { preventDefault: () => void; }) => {
+    event?.preventDefault();
 
     // sends data to DB
     const response = await (await fetch("/api/v1/auth/register", {
@@ -34,21 +38,27 @@ export function RegisterForm({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name: name, email: email, phone: "8602848818", password: password })
-    })).json()
+    })).json();
 
-    setName("")
-    setEmail("")
-    setPassword("")
+    // clears input
+    setName("");
+    setEmail("");
+    setPassword("");
 
     // shows toast
     if (response.status == 201) {
-      toast.success(response.message)
+      toast.success(response.message);
     } else if (response.status == 409) {
-      toast.error(response.message)
+      toast.error(response.message);
     } else {
-      toast.error(response.message)
+      toast.error(response.message);
     }
+  };
+
+  if (authState.isAuthenticated) {
+    return <Navigate to={"/"} replace={true} />;
   }
+
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={handleRegister}>
       <FieldGroup>
@@ -60,20 +70,20 @@ export function RegisterForm({
         </div>
         <Field>
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
-          <Input id="name" type="text" value={name} onChange={(e: { target: { value: SetStateAction<string> } }) => {
-            setName(e.target.value)
+          <Input id="name" type="text" value={name} onChange={(e: { target: { value: SetStateAction<string>; }; }) => {
+            setName(e.target.value);
           }} placeholder="Edward Snowden" required />
         </Field>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" value={email} onChange={(e: { target: { value: SetStateAction<string> } }) => {
-            setEmail(e.target.value)
+          <Input id="email" type="email" value={email} onChange={(e: { target: { value: SetStateAction<string>; }; }) => {
+            setEmail(e.target.value);
           }} placeholder="me@example.com" required />
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input id="password" type="password" value={password} onChange={(e: { target: { value: SetStateAction<string> } }) => {
-            setPassword(e.target.value)
+          <Input id="password" type="password" value={password} onChange={(e: { target: { value: SetStateAction<string>; }; }) => {
+            setPassword(e.target.value);
           }} placeholder="••••••••••••" required />
           <div className="w-fit flex items-center justify-end">
           </div>
@@ -101,5 +111,5 @@ export function RegisterForm({
         </Field>
       </FieldGroup>
     </form>
-  )
+  );
 }

@@ -1,18 +1,12 @@
-import { Outlet } from 'react-router'
-import { ThemeProvider } from '../components/custom/theme-provider'
-import { Toaster } from '../components/ui/sonner'
-import { store } from '../app/store'
-import { Provider } from 'react-redux'
+import { Outlet } from 'react-router';
+import { ThemeProvider } from '../components/custom/theme-provider';
+import { Toaster } from '../components/ui/sonner';
 
 export default function Layout() {
     return (
-        <>
-            <Provider store={store}>
-                <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                    <Outlet />
-                    <Toaster position='top-center' richColors />
-                </ThemeProvider>
-            </Provider>
-        </>
-    )
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <Toaster position='top-center' richColors />
+            <Outlet />
+        </ThemeProvider>
+    );
 }
