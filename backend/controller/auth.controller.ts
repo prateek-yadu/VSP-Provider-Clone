@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from "express";
 import send from "../utils/response/index.js";
 import { pool } from '../db/config.js';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
 interface userData {
     name: string;
@@ -17,7 +17,7 @@ export const Login = async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
         // checks if user exists
-        const [exists, fields]: any = await pool.query('SELECT name, image_url, password FROM users WHERE email = ?', [email]);
+        const [exists, fields]: any = await pool.query('SELECT id, name, image_url, password FROM users WHERE email = ?', [email]);
 
         if (exists.length != 0) {
             // checks password is vailed or not
@@ -31,10 +31,10 @@ export const Login = async (req: Request, res: Response) => {
                     name: exists[0].name,
                     email: email,
                     imageUrl: exists[0].image_url
-                }
+                };
 
                 // genrates token
-                const token = jwt.sign({ id: exists[0].id, name: exists[0].name }, process.env.JWT_SECRET || "shhh...", {
+                const token = jwt.sign({ id: exists[0].id }, process.env.JWT_SECRET || "shhh...", {
                     expiresIn: '1d'
                 });
 
@@ -56,10 +56,10 @@ export const Login = async (req: Request, res: Response) => {
     } catch (error) {
         send.internalError(res);
     }
-}
+};
 
 export const Register = async (req: Request, res: Response) => {
-    
+
     try {
         const { name, email, password } = req.body;
         const saltRounds: number = typeof (process.env.SALTROUNDS) == "string" && parseInt(process.env.SALTROUNDS) || 10;// adds salt rounds
@@ -83,4 +83,8 @@ export const Register = async (req: Request, res: Response) => {
     } catch (error) {
         send.internalError(res);
     }
-}
+};
+
+export const Validate = async (req: Request, res: Response) => {
+    send.ok(res); // sends ok if middleware validates the token 
+};
