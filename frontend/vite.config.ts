@@ -6,6 +6,16 @@ import path from "path" // needed for shadcn to work properly
 
 // https://vite.dev/config/
 export default defineConfig({
+  
+  /* proxy server */
+  server: {
+    proxy: {
+      "/api/v1/" :{
+        target: "http://localhost:3000",
+        changeOrigin: true
+      }
+    }
+  },
   plugins: [react(), tailwindcss(),
   ],
 

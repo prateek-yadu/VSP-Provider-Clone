@@ -3,21 +3,38 @@ import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from "express";
 import send from "../utils/response/index.js";
 import { pool } from '../db/config.js';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+
+interface userData {
+    name: string;
+    email: string;
+    imageUrl: string;
+}
 
 export const Login = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+
     try {
+        const { email, password } = req.body;
+
         // checks if user exists
-        const [exists, fields]: any = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [exists, fields]: any = await pool.query('SELECT id, name, image_url, password FROM users WHERE email = ?', [email]);
+
         if (exists.length != 0) {
             // checks password is vailed or not
             const vailed = await bcrypt.compare(password, exists[0].password);
 
             // if password is vailed send genrate and send token else thow error
             if (vailed) {
-                // genrate token
-                const token = jwt.sign({ id: exists[0].id, name: exists[0].name }, process.env.JWT_SECRET || "shhh...", {
+
+                // stores user data to send frontend
+                const userInfo: userData = {
+                    name: exists[0].name,
+                    email: email,
+                    imageUrl: exists[0].image_url
+                };
+
+                // genrates token
+                const token = jwt.sign({ id: exists[0].id }, process.env.JWT_SECRET || "shhh...", {
                     expiresIn: '1d'
                 });
 
@@ -29,7 +46,7 @@ export const Login = async (req: Request, res: Response) => {
                 });
 
                 // sends response
-                send.ok(res, "User Authenticated Successfully");
+                send.ok(res, "User Authenticated Successfully", { ...userInfo });
             } else {
                 send.unauthorized(res, "Invailed Credentials");
             }
@@ -39,15 +56,15 @@ export const Login = async (req: Request, res: Response) => {
     } catch (error) {
         send.internalError(res);
     }
-}
+};
 
 export const Register = async (req: Request, res: Response) => {
-    const { name, email, phone, password } = req.body;
-    const saltRounds: number = typeof (process.env.SALTROUNDS) == "string" && parseInt(process.env.SALTROUNDS) || 10;// adds salt rounds
 
     try {
+        const { name, email, password } = req.body;
+        const saltRounds: number = typeof (process.env.SALTROUNDS) == "string" && parseInt(process.env.SALTROUNDS) || 10;// adds salt rounds
         // checks if user exists 
-        const [exists, fields]: any = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [exists, fields]: any = await pool.query('SELECT email FROM users WHERE email = ?', [email]);
 
         if (exists.length != 0) {
             // return duplicate user error
@@ -57,8 +74,8 @@ export const Register = async (req: Request, res: Response) => {
             const hash = bcrypt.hashSync(password, saltRounds); // genrates hashed password
 
             // creates user
-            const sql = 'INSERT INTO users (id, name, email, phone, password, image_url) VALUES (?, ?, ?, ?, ?, ?)';
-            const values = [userId, name, email, phone, hash, 'none'];
+            const sql = 'INSERT INTO users (id, name, email, password, image_url) VALUES (?, ?, ?, ?, ?)';
+            const values = [userId, name, email, hash, 'none'];
             const [result, fields] = await pool.execute(sql, values);
 
             send.created(res, "User Created Successfuly");
@@ -66,4 +83,8 @@ export const Register = async (req: Request, res: Response) => {
     } catch (error) {
         send.internalError(res);
     }
-}
+};
+
+export const Validate = async (req: Request, res: Response) => {
+    send.ok(res); // sends ok if middleware validates the token 
+};
