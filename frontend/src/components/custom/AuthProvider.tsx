@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateAuthState } from "../../app/features/auth/AuthHandler";
-import { toast } from "sonner";
 
 export default function AuthProvider({ children }: { children: React.ReactNode; }) {
 
@@ -38,8 +37,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode; 
       } catch (error) {
         // sets the isAuthenticated value to false
         dispatch(updateAuthState({ isAuthenticated: false, name: undefined, email: undefined, imageUrl: undefined }));
-
-        toast.error("Something went wrong please try again."); // shows error message
       }
     };
 
