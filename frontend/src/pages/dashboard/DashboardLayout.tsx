@@ -1,16 +1,16 @@
-import { Link, Outlet } from 'react-router'
-import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar"
-import DashboardSidebar from '../../components/custom/dashboard/DashboardSidebar'
-import { Separator } from "../../components/ui/separator"
-import { Plus } from 'lucide-react'
-import { Button } from '../../components/ui/button'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../../components/ui/breadcrumb'
+import { Link, Outlet } from 'react-router';
+import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar";
+import DashboardSidebar from '../../components/custom/dashboard/DashboardSidebar';
+import { Separator } from "../../components/ui/separator";
+import { Plus } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../../components/ui/breadcrumb';
 
 export default function DashboardLayout() {
   return (
     <>
       <SidebarProvider>
-        <DashboardSidebar title='Prateek Labs Inc.' url='/dashboard' />
+        <DashboardSidebar />
         <main className='px-8 w-full overflow-x-hidden'>
           <div className="py-3 flex items-center justify-between gap-2 w-full">
             <div className="flex items-center gap-2 ">
@@ -47,5 +47,5 @@ export default function DashboardLayout() {
         </main>
       </SidebarProvider>
     </>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { Link } from "react-router";
 import {
     Sidebar,
     SidebarContent,
@@ -10,10 +10,11 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "../../ui/sidebar"
-import { Bell, CircleUserRound, CreditCard, EllipsisVertical, GalleryVerticalEnd, Home, Languages, LogOut, Server, Store } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
+} from "../../ui/sidebar";
+import { Bell, CircleUserRound, CreditCard, EllipsisVertical, GalleryVerticalEnd, Home, Languages, LogOut, Server, Store } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import Branding from "../../../branding.json";
 
 const menuItems = [
     {
@@ -36,13 +37,13 @@ const menuItems = [
         url: "#",
         icon: Store,
     },
-]
+];
 
 const user = {
     name: "Prateek Yadu",
     email: "prateek@prateekyadu.com",
     profileImage: "https://images.pexels.com/photos/315987/pexels-photo-315987.jpeg"
-}
+};
 
 const profileButtonBody = [
     {
@@ -60,7 +61,7 @@ const profileButtonBody = [
         url: "#",
         icon: Languages
     },
-]
+];
 
 const profileButtonFooter = [
     {
@@ -68,12 +69,13 @@ const profileButtonFooter = [
         url: "#",
         icon: LogOut
     }
-]
+];
 
 
 
 
-export default function DashboardSidebar({ title, url }: { title: string, url: string }) {
+export default function DashboardSidebar() {
+    const appName = Branding.AppName; // gets app name from @/src/branding.json
     return (
         <Sidebar>
             <SidebarHeader>
@@ -83,16 +85,12 @@ export default function DashboardSidebar({ title, url }: { title: string, url: s
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            {/* <Link to={url}>
-                                <GalleryVerticalEnd />
-                                <span className="text-base font-semibold">{title}</span>
-                            </Link> */}
                             <div className="flex justify-center gap-2 md:justify-start">
-                                <Link to={url} className="flex items-center gap-2 font-medium">
+                                <Link to="/dashboard" className="flex items-center gap-2 font-medium">
                                     <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
                                         <GalleryVerticalEnd className="size-4" />
                                     </div>
-                                    {title}
+                                    {appName}
                                 </Link>
                             </div>
                         </SidebarMenuButton>
@@ -186,5 +184,5 @@ export default function DashboardSidebar({ title, url }: { title: string, url: s
             </SidebarFooter>
         </Sidebar>
 
-    )
+    );
 }
