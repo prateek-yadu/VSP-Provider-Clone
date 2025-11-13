@@ -30,35 +30,43 @@ export function LoginForm({
   const [password, setPassword] = useState("");
 
   const handleLogin = async (event: { preventDefault: () => void; }) => {
-    event?.preventDefault();
 
-    // sends data to backend 
-    const response = await (await fetch("/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password })
-    })).json();
+    try {
+      event?.preventDefault();
 
-    // clears input
-    setEmail("");
-    setPassword("");
+      // sends data to backend 
+      const response = await (await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password })
+      })).json();
 
-    // shows toast
-    if (response.status == 200) {
-      // sets userdata to reducer for universal access 
-      dispatch(updateAuthState({
-        isAuthenticated: true,
-        name: response.data.name,
-        email: response.data.email,
-        imageUrl: response.data.imageUrl
-      }));
+      // clears input
+      setEmail("");
+      setPassword("");
 
-      toast.success(response.message);
-    } else {
-      toast.error(response.message);
+      // shows toast
+      if (response.status == 200) {
+        // sets userdata to reducer for universal access 
+        dispatch(updateAuthState({
+          isAuthenticated: true,
+          name: response.data.name,
+          email: response.data.email,
+          imageUrl: response.data.imageUrl
+        }));
+
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+      
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Something went wrong");
     }
+
   };
 
   if (authState.isAuthenticated) {

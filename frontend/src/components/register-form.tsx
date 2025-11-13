@@ -29,29 +29,36 @@ export function RegisterForm({
 
   // register handling logic
   const handleRegister = async (event: { preventDefault: () => void; }) => {
-    event?.preventDefault();
+    try {
 
-    // sends data to DB
-    const response = await (await fetch("/api/v1/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, email: email, phone: "8602848818", password: password })
-    })).json();
+      event?.preventDefault();
 
-    // clears input
-    setName("");
-    setEmail("");
-    setPassword("");
+      // sends data to DB
+      const response = await (await fetch("/api/v1/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: name, email: email, phone: "8602848818", password: password })
+      })).json();
 
-    // shows toast
-    if (response.status == 201) {
-      toast.success(response.message);
-    } else if (response.status == 409) {
-      toast.error(response.message);
-    } else {
-      toast.error(response.message);
+      // clears input
+      setName("");
+      setEmail("");
+      setPassword("");
+
+      // shows toast
+      if (response.status == 201) {
+        toast.success(response.message);
+      } else if (response.status == 409) {
+        toast.error(response.message);
+      } else {
+        toast.error(response.message);
+      }
+      
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Something went wrong");
     }
   };
 
