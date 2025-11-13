@@ -15,6 +15,8 @@ import { Bell, CircleUserRound, CreditCard, EllipsisVertical, GalleryVerticalEnd
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import Branding from "../../../branding.json";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../app/store";
 
 const menuItems = [
     {
@@ -38,12 +40,6 @@ const menuItems = [
         icon: Store,
     },
 ];
-
-const user = {
-    name: "Prateek Yadu",
-    email: "prateek@prateekyadu.com",
-    profileImage: "https://images.pexels.com/photos/315987/pexels-photo-315987.jpeg"
-};
 
 const profileButtonBody = [
     {
@@ -71,11 +67,16 @@ const profileButtonFooter = [
     }
 ];
 
-
-
-
 export default function DashboardSidebar() {
     const appName = Branding.AppName; // gets app name from @/src/branding.json
+
+    // gets user details
+    const user = useSelector((state: RootState) => state.AuthState);
+
+    // genrates user fallback text 
+    const arr = user.name?.split(" ");
+    const fallbackUserAvatar = `${arr?.at(0)?.toUpperCase().charAt(0) + `${arr?.at(arr.length - 1)?.toUpperCase().charAt(0)}`}`;
+
     return (
         <Sidebar>
             <SidebarHeader>
@@ -126,8 +127,8 @@ export default function DashboardSidebar() {
                                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
                                     <Avatar className="h-8 w-8 rounded-full">
-                                        <AvatarImage src={user.profileImage} alt={user.name} />
-                                        <AvatarFallback className="rounded-lg">PY</AvatarFallback>
+                                        <AvatarImage src={user.imageUrl} alt={user.name} />
+                                        <AvatarFallback className="rounded-lg">{fallbackUserAvatar}</AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-medium">{user.name}</span>
@@ -146,8 +147,8 @@ export default function DashboardSidebar() {
                                 <DropdownMenuLabel className="p-0 font-normal">
                                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-8 w-8 rounded-full">
-                                            <AvatarImage src={user.profileImage} alt={user.name} />
-                                            <AvatarFallback className="rounded-lg">PY</AvatarFallback>
+                                            <AvatarImage src={user.imageUrl} alt={user.name} />
+                                            <AvatarFallback className="rounded-lg">{fallbackUserAvatar}</AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
                                             <span className="truncate font-medium">{user.name}</span>
