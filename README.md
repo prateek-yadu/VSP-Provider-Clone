@@ -142,3 +142,6 @@ For detailed documentation refer to the `__docs__` directory.
 - Market place for pre-built images.
 - VMs metrics on dashboard (client's browser).
 - Multi region or server support.
+
+> [!NOTE]
+> Project is migrating to libvirt insted of lxd, their will be no further development after relese v0.0.1.
