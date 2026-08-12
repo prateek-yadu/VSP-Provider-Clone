@@ -12,7 +12,7 @@ services:
     ports:
       - 8080:80
     healthcheck:
-      test: [ "CMD", "curl", "-X GET", "http://localhost:80" ]
+      test: ["CMD", "curl", "-X GET", "http://localhost:80"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -31,7 +31,7 @@ services:
       - 3306:3306
       - 33060:33060
     healthcheck:
-      test: [ "CMD", "mysqladmin", "-p $$MYSQL_ROOT_PASSWORD", "ping" ]
+      test: ["CMD", "mysqladmin", "-p $$MYSQL_ROOT_PASSWORD", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -47,7 +47,7 @@ services:
     ports:
       - 6379:6379
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -76,7 +76,7 @@ services:
     env_file:
       - ./backend/.env
     healthcheck:
-      test: [ "CMD", "curl", "-X GET", "http://localhost:3000" ]
+      test: ["CMD", "curl", "-X GET", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -98,7 +98,7 @@ services:
     env_file:
       - ./lxd_agent/.env
     healthcheck:
-      test: [ "CMD", "curl", "-X GET", "http://localhost:8000" ]
+      test: ["CMD", "curl", "-X GET", "http://localhost:8000"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -107,8 +107,7 @@ services:
       proxy:
         condition: service_healthy
 
-  
-  # Workers 
+  # Workers
   event-worker:
     build:
       context: backend
@@ -210,6 +209,24 @@ services:
       - ./__infra__/loki/loki-config.yaml:/etc/loki/local-config.yaml
     command: -config.file=/etc/loki/local-config.yaml
 
+  metrics:
+    image: prom/prometheus:v3-distroless
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./__infra__/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  service_health_exporter:
+    build:
+      context: ./__infra__/prometheus/exporter/service_metrics
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8090
+    depends_on:
+      api-server:
+        condition: service_healthy
+
   grafana:
     image: grafana/grafana:${GRAFANA_VERSION:-13.0.1}
     container_name: grafana
@@ -235,6 +252,14 @@ services:
           basicAuth: false
           isDefault: false
           version: 1
-          editable: false
+          editable: true
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://192.168.29.102:9090
+          basicAuth: false
+          isDefault: false
+          version: 1
+          editable: true
         EOF
         /run.sh
